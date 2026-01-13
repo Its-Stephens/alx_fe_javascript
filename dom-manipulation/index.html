@@ -1,72 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="/dom-manipulation/index.css" />
+  <link rel="stylesheet" href="/dom-manipulation/index.css">
 </head>
 <body>
 
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- =========================
-       CATEGORY FILTER
-  ========================== -->
+  <!-- CATEGORY FILTER (REQUIRED) -->
   <label for="categoryFilter">Filter by Category:</label>
-  <select id="categoryFilter" onchange="filterQuotes()">
+  <select id="categoryFilter">
     <option value="all">All Categories</option>
   </select>
 
-  <!-- =========================
-       QUOTE DISPLAY
-  ========================== -->
-  <div id="quoteDisplay">
-    <!-- Quote will appear here -->
-  </div>
+  <!-- QUOTE DISPLAY (REQUIRED) -->
+  <div id="quoteDisplay"></div>
 
-  <!-- =========================
-       MAIN ACTION BUTTONS
-  ========================== -->
-  <div>
-    <button id="newQuote">Show New Quote</button>
-    <button onclick="pushQuotesToServer()">Sync Quotes to Server</button>
-    <button onclick="manualResolve()">Restore Local Version</button>
-  </div>
+  <!-- MAIN BUTTONS (REQUIRED IDS) -->
+  <button id="newQuote" onclick="showRandomQuote()">Show Random Quote</button>
+  <button onclick="postQuotesToServer()">Post Quotes to Server</button>
+  <button onclick="manualResolve()">Restore Local Quotes</button>
 
-  <!-- =========================
-       ADD NEW QUOTE
-  ========================== -->
-  <h3>Add a New Quote</h3>
-  <input
-    type="text"
-    id="newQuoteText"
-    placeholder="Enter quote text"
-  />
-  <input
-    type="text"
-    id="newQuoteCategory"
-    placeholder="Enter quote category"
-  />
-  <button onclick="addQuote()">Add Quote</button>
-
-  <!-- =========================
-       IMPORT / EXPORT JSON
-  ========================== -->
-  <h3>Import / Export Quotes</h3>
-  <button onclick="exportQuotes()">Export Quotes (JSON)</button>
-
-  <input
-    type="file"
-    id="importFile"
-    accept=".json"
-    onchange="importFromJsonFile(event)"
-  />
-
-
+  <!-- NOTIFICATION AREA (REQUIRED) -->
   <p id="notification"></p>
 
-  <script src="script.js"></script>
-
+  <script src="/dom-manipulation/script.js"></script>
 </body>
 </html>

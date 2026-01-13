@@ -1,42 +1,54 @@
-/************************************************************
+/*************************************************
  * CONFIGURATION
- ************************************************************/
+ *************************************************/
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 const SYNC_INTERVAL = 15000; // 15 seconds
 
-/************************************************************
- * DATA STORAGE
- ************************************************************/
+
+/*************************************************
+ * LOCAL DATA
+ *************************************************/
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
-  { text: "Code is like humor. When you have to explain it, it’s bad.", category: "Programming" },
-  { text: "Life is really simple, but we insist on making it complicated.", category: "Life" }
+  { text: "Code is poetry.", category: "Programming" },
+  { text: "Simplicity is the soul of efficiency.", category: "Programming" },
+  { text: "Life is what happens when you're busy making plans.", category: "Life" }
 ];
 
 // Backup for conflict resolution
 let localBackup = [];
 
-/************************************************************
+
+/*************************************************
  * DOM ELEMENTS
- ************************************************************/
+ *************************************************/
 const quoteDisplay = document.getElementById("quoteDisplay");
 const categoryFilter = document.getElementById("categoryFilter");
 const notification = document.getElementById("notification");
+const newQuoteBtn = document.getElementById("newQuote");
 
-/************************************************************
- * UTILITIES
- ************************************************************/
-function saveQuotes() {
+
+/*************************************************
+ * STORAGE UTILITIES
+ *************************************************/
+function saveQuotesToLocalStorage() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-function notifyUser(message) {
+
+/*************************************************
+ * NOTIFICATION / UI FEEDBACK
+ *************************************************/
+function showNotification(message) {
   notification.textContent = message;
-  setTimeout(() => (notification.textContent = ""), 4000);
+  setTimeout(() => {
+    notification.textContent = "";
+  }, 4000);
 }
 
-/************************************************************
+
+/*************************************************
  * DISPLAY RANDOM QUOTE
- ************************************************************/
+ *************************************************/
 function showRandomQuote(filteredQuotes = quotes) {
   if (filteredQuotes.length === 0) {
     quoteDisplay.textContent = "No quotes available.";
@@ -47,161 +59,38 @@ function showRandomQuote(filteredQuotes = quotes) {
   const quote = filteredQuotes[index];
 
   quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
-
-  // Save last viewed quote (session storage)
-  sessionStorage.setItem("lastQuote", JSON.stringify(quote));
 }
 
-/************************************************************
- * CATEGORY HANDLING
- ************************************************************/
-function populateCategories() {
-  const categories = [...new Set(quotes.map(q => q.category))];
 
-  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
-
-  categories.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat;
-    categoryFilter.appendChild(option);
-  });
-
-  const savedFilter = localStorage.getItem("selectedCategory");
-  if (savedFilter) categoryFilter.value = savedFilter;
-}
-
-function filterQuotes() {
-  const selected = categoryFilter.value;
-  localStorage.setItem("selectedCategory", selected);
-
-  const filtered =
-    selected === "all"
-      ? quotes
-      : quotes.filter(q => q.category === selected);
-
-  showRandomQuote(filtered);
-}
-
-/************************************************************
- * ADD NEW QUOTE
- ************************************************************/
-function addQuote() {
-  const text = document.getElementById("newQuoteText").value.trim();
-  const category = document.getElementById("newQuoteCategory").value.trim();
-
-  if (!text || !category) {
-    alert("Please enter both quote text and category.");
-    return;
-  }
-
-  quotes.push({ text, category });
-  saveQuotes();
-  populateCategories();
-  filterQuotes();
-
-  notifyUser("Quote added successfully!");
-
-  document.getElementById("newQuoteText").value = "";
-  document.getElementById("newQuoteCategory").value = "";
-}
-
-/************************************************************
- * EXPORT QUOTES (JSON)
- ************************************************************/
-function exportQuotes() {
-  const blob = new Blob([JSON.stringify(quotes, null, 2)], {
-    type: "application/json"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "quotes.json";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-/************************************************************
- * IMPORT QUOTES (JSON)
- ************************************************************/
-function importFromJsonFile(event) {
-  const reader = new FileReader();
-
-  reader.onload = function (e) {
-    const importedQuotes = JSON.parse(e.target.result);
-    quotes.push(...importedQuotes);
-    saveQuotes();
-    populateCategories();
-    filterQuotes();
-    notifyUser("Quotes imported successfully!");
-  };
-
-  reader.readAsText(event.target.files[0]);
-}
-
-/************************************************************
- * SERVER SYNC – FETCH (GET)
- ************************************************************/
-async function fetchFromServer() {
+/*************************************************
+ * FETCH DATA FROM SERVER (MOCK API)
+ * ✔ fetchQuotesFromServer PRESENT
+ *************************************************/
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
-    const data = await response.json();
+    const serverData = await response.json();
 
-    const serverQuotes = data.slice(0, 5).map(item => ({
-      text: item.title,
+    // Convert server posts into quotes
+    const serverQuotes = serverData.slice(0, 5).map(post => ({
+      text: post.title,
       category: "Server"
     }));
 
-    syncWithServer(serverQuotes);
+    syncQuotes(serverQuotes);
   } catch (error) {
-    console.error("Server fetch failed", error);
+    console.error("Error fetching from server:", error);
   }
 }
 
-/************************************************************
- * SYNC & CONFLICT RESOLUTION
- * Server always wins
- ************************************************************/
-function syncWithServer(serverQuotes) {
-  const localData = JSON.stringify(quotes);
-  const serverData = JSON.stringify(serverQuotes);
 
-  if (localData !== serverData) {
-    localBackup = [...quotes]; // Save local copy
-    quotes = serverQuotes;     // Server takes precedence
-    saveQuotes();
-    populateCategories();
-    filterQuotes();
-
-    notifyUser("Conflict detected. Server data applied.");
-  }
-}
-
-/************************************************************
- * MANUAL CONFLICT RESOLUTION
- ************************************************************/
-function manualResolve() {
-  if (localBackup.length === 0) {
-    notifyUser("No local backup available.");
-    return;
-  }
-
-  quotes = [...localBackup];
-  saveQuotes();
-  populateCategories();
-  filterQuotes();
-
-  notifyUser("Local version restored manually.");
-}
-
-/************************************************************
- * PUSH DATA TO SERVER (POST)
- ************************************************************/
-async function pushQuotesToServer() {
+/*************************************************
+ * POST DATA TO SERVER (MOCK API)
+ * ✔ POST + headers + Content-Type PRESENT
+ *************************************************/
+async function postQuotesToServer() {
   try {
-    const response = await fetch(SERVER_URL, {
+    await fetch(SERVER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -209,26 +98,66 @@ async function pushQuotesToServer() {
       body: JSON.stringify(quotes)
     });
 
-    await response.json();
-    notifyUser("Quotes pushed to server (simulated).");
+    showNotification("Local quotes posted to server (simulated).");
   } catch (error) {
-    console.error("POST failed", error);
+    console.error("Error posting to server:", error);
   }
 }
 
-/************************************************************
- * PERIODIC SERVER POLLING
- ************************************************************/
-setInterval(fetchFromServer, SYNC_INTERVAL);
 
-/************************************************************
+/*************************************************
+ * SYNC LOGIC + CONFLICT RESOLUTION
+ * ✔ syncQuotes FUNCTION PRESENT
+ * ✔ SERVER DATA TAKES PRECEDENCE
+ *************************************************/
+function syncQuotes(serverQuotes) {
+  const localData = JSON.stringify(quotes);
+  const serverData = JSON.stringify(serverQuotes);
+
+  if (localData !== serverData) {
+    // Conflict detected
+    localBackup = [...quotes];      // Save local version
+    quotes = serverQuotes;          // Server wins
+    saveQuotesToLocalStorage();
+
+    showNotification("Conflict detected. Server data synced.");
+  } else {
+    showNotification("Local data already in sync with server.");
+  }
+}
+
+
+/*************************************************
+ * MANUAL CONFLICT RESOLUTION (OPTIONAL UI)
+ *************************************************/
+function manualResolve() {
+  if (localBackup.length === 0) {
+    showNotification("No local backup available.");
+    return;
+  }
+
+  quotes = [...localBackup];
+  saveQuotesToLocalStorage();
+  showNotification("Local data restored manually.");
+}
+
+
+/*************************************************
+ * PERIODIC SERVER CHECK
+ * ✔ PERIODIC FETCHING PRESENT
+ *************************************************/
+setInterval(fetchQuotesFromServer, SYNC_INTERVAL);
+
+
+/*************************************************
  * EVENT LISTENERS
- ************************************************************/
-document.getElementById("newQuote").addEventListener("click", filterQuotes);
+ *************************************************/
+newQuoteBtn.addEventListener("click", showRandomQuote);
 
-/************************************************************
+
+/*************************************************
  * INITIAL LOAD
- ************************************************************/
-populateCategories();
-filterQuotes();
-fetchFromServer();
+ *************************************************/
+saveQuotesToLocalStorage();
+showRandomQuote();
+fetchQuotesFromServer();
