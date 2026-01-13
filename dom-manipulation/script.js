@@ -62,8 +62,15 @@ function filterQuotes() {
       ? quotes
       : quotes.filter(q => q.category === selectedCategory);
 
-  displayQuotes(filteredQuotes);
+  if (filteredQuotes.length === 0) {
+    quoteDisplay.textContent = "No quotes found for this category.";
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  quoteDisplay.textContent = `"${filteredQuotes[randomIndex].text}"`;
 }
+
 
 /* =========================
    DISPLAY QUOTES
