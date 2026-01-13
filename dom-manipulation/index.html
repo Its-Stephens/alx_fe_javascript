@@ -4,52 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <h1>Dynamic Quote Generator</h1>
 
   <!-- Category Filter -->
-  <label for="categoryFilter">Filter by category:</label>
+  <label for="categoryFilter">Filter by Category:</label>
   <select id="categoryFilter" onchange="filterQuotes()">
     <option value="all">All Categories</option>
   </select>
 
   <!-- Quote Display -->
-  <div id="quoteDisplay">Click the button to see quotes.</div>
+  <div id="quoteDisplay"></div>
 
-  <!-- Show/Refresh Quotes -->
-  <button id="newQuote">Show Quotes</button>
+  <!-- Buttons -->
+  <button id="newQuote">Show New Quote</button>
+  <button onclick="exportQuotes()">Export Quotes (JSON)</button>
+  <button onclick="pushQuotesToServer()">Sync Quotes to Server</button>
 
-  <hr>
-
-  <!-- Add New Quote -->
+  <!-- Add Quote -->
   <h3>Add a New Quote</h3>
-  <div>
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button onclick="addQuote()">Add Quote</button>
-  </div>
+  <input id="newQuoteText" type="text" placeholder="Enter quote text" />
+  <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+  <button onclick="addQuote()">Add Quote</button>
 
-  <hr>
-
-  <!-- JSON Import/Export -->
-  <h3>Import/Export Quotes</h3>
-  <button onclick="exportToJson()">Export Quotes (JSON)</button>
+  <!-- Import JSON -->
+  <h3>Import Quotes</h3>
   <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
 
-  <hr>
+  <!-- Notification -->
+  <p id="notification"></p>
 
-  <!-- Manual Server Sync -->
-  <h3>Server Sync</h3>
-  <button onclick="manualSync()">Resolve Conflicts Manually</button>
-
-  <!-- Notifications -->
-  <div id="notification" style="display:none; padding:10px; background:#eee; margin-top:10px;"></div>
-
-  <!-- JavaScript -->
   <script src="script.js"></script>
-
 </body>
 </html>
