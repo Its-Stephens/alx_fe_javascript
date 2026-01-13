@@ -24,6 +24,20 @@
     <button onclick="createAddQuoteForm()">Add Quote</button>
   </div>
 
+  <hr>
+
+<h3>Storage & Data</h3>
+
+<button onclick="exportToJson()">Export Quotes (JSON)</button>
+
+<input 
+  type="file" 
+  id="importFile" 
+  accept=".json" 
+  onchange="importFromJsonFile(event)" 
+/>
+
+
   <script src="/dom-manipulation/script.js"></script>
 </body>
 </html>
