@@ -1,5 +1,6 @@
 class QuoteApp {
     constructor() {
+       
         this.quotes = [
             { text: "The only way to do great work is to love what you do.", category: "Success" },
             { text: "Be the change that you wish to see in the world.", category: "Inspirational" },
@@ -7,6 +8,9 @@ class QuoteApp {
             { text: "Life is what happens when you're busy making other plans.", category: "Life" },
             { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", category: "Success" }
         ];
+
+        // Ensure the quotes array exists and is valid before proceeding
+        this.validateQuotesArray();
 
         // Cache DOM elements
         this.display = document.getElementById('quoteDisplay');
@@ -17,19 +21,35 @@ class QuoteApp {
         this.init();
     }
 
-    /**
-     * Initializes the application
-     */
+
+    validateQuotesArray() {
+        if (!Array.isArray(this.quotes)) {
+            console.error("Critical error: quotes array is missing or invalid.");
+            this.quotes = [];
+            return;
+        }
+
+        const isValid = this.quotes.every(quote => 
+            typeof quote === 'object' && 
+            quote !== null && 
+            'text' in quote && 
+            'category' in quote
+        );
+
+        if (!isValid) {
+            console.warn("Some quote objects are missing required properties (text or category).");
+        }
+    }
+
     init() {
+        if (!this.display || !this.filter) return;
         this.updateFilterDropdown();
         this.createAddQuoteForm();
         this.showRandomQuote();
         this.addEventListeners();
     }
 
-    /**
-     * Set up global event listeners
-     */
+   
     addEventListeners() {
         this.newQuoteBtn.addEventListener('click', () => this.showRandomQuote());
         this.filter.addEventListener('change', () => this.showRandomQuote());
@@ -51,7 +71,7 @@ class QuoteApp {
 
     /**
      * Requirement: showRandomQuote
-     * Picks a quote from filtered results and renders it.
+     * Picks a quote from filtered results and renders it via DOM manipulation.
      */
     showRandomQuote() {
         const selectedCategory = this.filter.value;
@@ -82,10 +102,11 @@ class QuoteApp {
 
     /**
      * Requirement: createAddQuoteForm
-     * Dynamically constructs the quote addition form.
+     * Dynamically constructs the quote addition form using DOM methods.
      */
     createAddQuoteForm() {
-        // Construct form elements
+        if (!this.formContainer) return;
+        
         const formGroup = document.createElement('div');
         formGroup.className = 'form-group';
 
@@ -94,6 +115,7 @@ class QuoteApp {
         
         const addBtn = document.createElement('button');
         addBtn.textContent = 'Add Quote';
+        // Requirement: onclick functionality for adding quotes
         addBtn.onclick = () => this.addQuote();
 
         formGroup.append(textInput, catInput, addBtn);
@@ -112,37 +134,42 @@ class QuoteApp {
     }
 
     /**
-     * Handles quote creation logic
+     * Handles adding a new quote to the data array and updating the UI
      */
     addQuote() {
         const textInput = document.getElementById('newQuoteText');
         const catInput = document.getElementById('newQuoteCategory');
         
+        if (!textInput || !catInput) return;
+
         const text = textInput.value.trim();
         const category = catInput.value.trim();
 
         if (!text || !category) {
-            alert('Please fill out all fields.');
+            alert('Please fill out both the quote and category fields.');
             return;
         }
 
+        // Add new object to array
         this.quotes.push({ text, category });
 
-        // Reset UI state
+        // Reset inputs
         textInput.value = '';
         catInput.value = '';
+        
+        // Update components
         this.updateFilterDropdown();
         
-        // Visual confirmation
+        // Show immediately if relevant
         if (this.filter.value === 'all' || this.filter.value === category) {
             this.showRandomQuote();
         }
         
-        alert('Quote added!');
+        console.log("Quotes updated:", this.quotes);
     }
 }
 
-// Start the app when the DOM is ready
+// Instantiate app when DOM is fully parsed
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new QuoteApp();
 });
