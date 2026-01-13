@@ -27,6 +27,7 @@ const notification = document.getElementById("notification");
 const newQuoteBtn = document.getElementById("newQuote");
 
 
+
 /*************************************************
  * STORAGE UTILITIES
  *************************************************/
@@ -115,16 +116,20 @@ function syncQuotes(serverQuotes) {
   const serverData = JSON.stringify(serverQuotes);
 
   if (localData !== serverData) {
-    // Conflict detected
-    localBackup = [...quotes];      // Save local version
+    localBackup = [...quotes];      // Backup local data
     quotes = serverQuotes;          // Server wins
     saveQuotesToLocalStorage();
 
+    // REQUIRED ALERT
+    alert("Quotes synced with server!");
+
+    // UI notification
     showNotification("Conflict detected. Server data synced.");
   } else {
     showNotification("Local data already in sync with server.");
   }
 }
+
 
 
 /*************************************************
