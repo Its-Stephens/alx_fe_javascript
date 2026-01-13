@@ -40,7 +40,7 @@ function showRandomQuote() {
 }
 
 // Add a new quote dynamically
-function addQuote() {
+function createAddQuoteForm() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
 
