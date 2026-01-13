@@ -1,15 +1,124 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* =========================
+   BODY
+========================= */
 body {
-  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #333;
+  max-width: 700px;
+  margin: 40px auto;
   padding: 20px;
 }
 
+/* =========================
+   HEADINGS
+========================= */
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+h3 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+/* =========================
+   QUOTE DISPLAY
+========================= */
 #quoteDisplay {
+  background: white;
+  border-left: 5px solid #3498db;
+  padding: 20px;
   margin: 20px 0;
   font-size: 1.2rem;
   font-style: italic;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
 }
 
-input, select, button {
-  margin: 5px 0;
-  padding: 5px;
+/* =========================
+   CONTROLS
+========================= */
+label {
+  font-weight: 600;
+}
+
+select {
+  margin-left: 10px;
+  padding: 6px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+input[type="text"],
+input[type="file"],
+select {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button {
+  margin-top: 10px;
+  margin-right: 5px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+#notification {
+  margin-top: 20px;
+  padding: 10px;
+  color: #155724;
+  background: #d4edda;
+  border-left: 4px solid #28a745;
+  display: inline-block;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 600px) {
+  body {
+    margin: 20px;
+  }
+
+  #quoteDisplay {
+    font-size: 1rem;
+  }
 }

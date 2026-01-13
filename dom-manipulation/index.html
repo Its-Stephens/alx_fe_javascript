@@ -4,39 +4,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/dom-manipulation/index.css" />
 </head>
 <body>
 
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Category Filter -->
+  <!-- =========================
+       CATEGORY FILTER
+  ========================== -->
   <label for="categoryFilter">Filter by Category:</label>
   <select id="categoryFilter" onchange="filterQuotes()">
     <option value="all">All Categories</option>
   </select>
 
-  <!-- Quote Display -->
-  <div id="quoteDisplay"></div>
+  <!-- =========================
+       QUOTE DISPLAY
+  ========================== -->
+  <div id="quoteDisplay">
+    <!-- Quote will appear here -->
+  </div>
 
-  <!-- Buttons -->
-  <button id="newQuote">Show New Quote</button>
-  <button onclick="exportQuotes()">Export Quotes (JSON)</button>
-  <button onclick="pushQuotesToServer()">Sync Quotes to Server</button>
+  <!-- =========================
+       MAIN ACTION BUTTONS
+  ========================== -->
+  <div>
+    <button id="newQuote">Show New Quote</button>
+    <button onclick="pushQuotesToServer()">Sync Quotes to Server</button>
+    <button onclick="manualResolve()">Restore Local Version</button>
+  </div>
 
-  <!-- Add Quote -->
+  <!-- =========================
+       ADD NEW QUOTE
+  ========================== -->
   <h3>Add a New Quote</h3>
-  <input id="newQuoteText" type="text" placeholder="Enter quote text" />
-  <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+  <input
+    type="text"
+    id="newQuoteText"
+    placeholder="Enter quote text"
+  />
+  <input
+    type="text"
+    id="newQuoteCategory"
+    placeholder="Enter quote category"
+  />
   <button onclick="addQuote()">Add Quote</button>
 
-  <!-- Import JSON -->
-  <h3>Import Quotes</h3>
-  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+  <!-- =========================
+       IMPORT / EXPORT JSON
+  ========================== -->
+  <h3>Import / Export Quotes</h3>
+  <button onclick="exportQuotes()">Export Quotes (JSON)</button>
 
-  <!-- Notification -->
+  <input
+    type="file"
+    id="importFile"
+    accept=".json"
+    onchange="importFromJsonFile(event)"
+  />
+
+
   <p id="notification"></p>
 
   <script src="script.js"></script>
+
 </body>
 </html>
