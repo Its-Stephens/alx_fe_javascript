@@ -1,36 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Quote Generator</title>
-    <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Quote Generator</title>
+  <link rel="stylesheet" href="/dom-manipulation/index.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Dynamic Quote Generator</h1>
-        
-        <div id="quoteDisplay" class="quote-display">
-            <!-- Quote will be injected here -->
-            <p class="placeholder">Click the button to see a quote!</p>
-        </div>
 
-        <div class="controls">
-            <button id="newQuote">Show New Quote</button>
-            <select id="categoryFilter">
-                <option value="all">All Categories</option>
-            </select>
-        </div>
+  <h1>Dynamic Quote Generator</h1>
 
-        <div class="add-quote-section">
-            <h2>Add a New Quote</h2>
-            <div class="form-group">
-                <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-                <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-                <button id="addQuoteBtn">Add Quote</button>
-            </div>
-        </div>
-    </div>
-    <script src="index.js"></script>
+  <label for="categorySelect">Choose a category:</label>
+  <select id="categorySelect"></select>
+
+  <div id="quoteDisplay">Click the button to see a quote.</div>
+
+  <button id="newQuote">Show New Quote</button>
+
+  <h3>Add a New Quote</h3>
+  <div>
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+    <button onclick="addQuote()">Add Quote</button>
+  </div>
+
+  <script src="/dom-manipulation/script.js"></script>
 </body>
 </html>
